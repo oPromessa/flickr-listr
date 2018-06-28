@@ -936,8 +936,33 @@ if __name__ == "__main__":
     if not flick.checkToken():
         flick.authenticate()
 
+    cur = con.cursor()
+    try:
+        cur.execute("SELECT files_id FROM files")
+        existing_media = set(file[0] for file in cur.fetchall())
+    except lite.Error as err:
+        NPR.niceerror(caught=True,
+                      caughtprefix='+++ DB',
+                      caughtcode='015',
+                      caughtmsg='DB error on DB select: [{!s}]'
+                      .format(err.args[0]),
+                      useniceprint=True,
+                      exceptsysinfo=True)
+
     # CODING: EXTREME
-    flick.photos_searchLISTR()
+    flickr_media = flick.photos_searchLISTR()
+
+    localmediaonly = set(existing_media) - set(flickr_media)
+    NPR.niceprint('----------------Local Media Only: {!s}'
+                  .format(len(localmediaonly)))
+    for i in localmediaonly:
+        print('{!s}', i)
+
+    flickrmediaonly = set(flickr_media) - set(existing_media)
+    NPR.niceprint('----------------Flickr Media Only: {!s}'
+                  .format(len(flickrmediaonly)))
+    for i in flickrmediaonly:
+        print('{!s}', i)
 
 NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
               nutime.strftime(UPLDRConstants.TimeFormat) +
