@@ -71,7 +71,7 @@ NPR = NicePrint.NicePrint()
 # -----------------------------------------------------------------------------
 
 
-#==============================================================================
+# =============================================================================
 # Init code
 #
 # Python version must be greater than 2.7 for this script to run
@@ -125,7 +125,7 @@ nutime = time
 nuflickr = None
 
 
-#==============================================================================
+# =============================================================================
 # Read Config from config.ini file
 # Obtain configuration from uploadr.ini
 # Refer to contents of uploadr.ini for explanation on configuration parameters
@@ -169,7 +169,7 @@ LOGGING_LEVEL = (config.get('Config', 'LOGGING_LEVEL')
                  if config.has_option('Config', 'LOGGING_LEVEL')
                  else logging.WARNING)
 
-#==============================================================================
+# =============================================================================
 # Logging
 #
 # Obtain configuration level from Configuration file.
@@ -212,7 +212,7 @@ logging.basicConfig(stream=sys.stderr,
                     datefmt=UPLDRConstants.TimeFormat,
                     format='[%(asctime)s]:[%(processName)s][%(levelname)-8s]'
                            ':[%(name)s] %(message)s')
-#==============================================================================
+# =============================================================================
 # Test section for logging.
 # CODING: Uncomment for testing.
 #   Only applicable if LOGGING_LEVEL is INFO or below (DEBUG, NOTSET)
@@ -231,11 +231,11 @@ logging.basicConfig(stream=sys.stderr,
 #         logging.info('Message with {!s}'.format(
 #                                     'INFO UNDER min WARNING LEVEL'))
 if LOGGING_LEVEL <= logging.INFO:
-    NPR.niceprint('Pretty Print for {!s}'.format(
-                  'FLICKR Configuration:'))
+    NPR.niceprint('Pretty Print for {!s}'
+                  .format('FLICKR Configuration:'))
     pprint.pprint(FLICKR)
 
-#==============================================================================
+# =============================================================================
 # CODING: Search 'Main code' section for code continuation after definitions
 
 # ----------------------------------------------------------------------------
@@ -272,13 +272,13 @@ class Uploadr:
         """
 
         if not total:
-            if (count % 100 == 0):
+            if count % 100 == 0:
                 NPR.niceprint('\t' +
                               str(count) +
                               ' files processed (uploaded, md5ed '
                               'or timestamp checked)')
         else:
-            if (count % 100 > 0):
+            if count % 100 > 0:
                 NPR.niceprint('\t' +
                               str(count) +
                               ' files processed (uploaded, md5ed '
@@ -381,7 +381,7 @@ class Uploadr:
         logging.warning('checkToken is (self.token is None):[{!s}]'
                         .format(self.token is None))
 
-        if (self.token is None):
+        if self.token is None:
             return False
         else:
             nuflickr = flickrapi.FlickrAPI(FLICKR["api_key"],
@@ -412,7 +412,7 @@ class Uploadr:
         # XXX MSP Changed from self to flick
         # if (not self.checkToken()):
         #     self.authenticate()
-        if (not flick.checkToken()):
+        if not flick.checkToken():
             flick.authenticate()
         con = lite.connect(DB_PATH)
         con.text_factory = str
@@ -426,13 +426,13 @@ class Uploadr:
 
             count = 0
             for row in rows:
-                if (not os.path.isfile(row[1].decode('utf-8'))):
+                if not os.path.isfile(row[1].decode('utf-8')):
                     success = self.deleteFile(row, cur)
                     logging.warning('deleteFile result: {!s}'.format(success))
                     count = count + 1
-                    if (count % 3 == 0):
+                    if count % 3 == 0:
                         NPR.niceprint('\t' + str(count) + ' files removed...')
-            if (count % 100 > 0):
+            if count % 100 > 0:
                 NPR.niceprint('\t' + str(count) + ' files removed.')
 
         # Closing DB connection
@@ -475,7 +475,7 @@ class Uploadr:
                 deleteResp,
                 encoding='utf-8',
                 method='xml'))
-            if (self.isGood(deleteResp)):
+            if self.isGood(deleteResp):
                 # Find out if the file is the last item in a set, if so,
                 # remove the set from the local db
                 cur.execute("SELECT set_id FROM files WHERE files_id = ?",
@@ -484,7 +484,7 @@ class Uploadr:
                 cur.execute("SELECT set_id FROM files WHERE set_id = ?",
                             (row[0],))
                 rows = cur.fetchall()
-                if (len(rows) == 1):
+                if len(rows) == 1:
                     NPR.niceprint('File is the last of the set, '
                                   'deleting the set ID: ' + str(row[0]))
                     cur.execute("DELETE FROM sets WHERE set_id = ?", (row[0],))
@@ -494,7 +494,7 @@ class Uploadr:
                 NPR.niceprint("Successful deletion.")
                 success = True
             else:
-                if (deleteResp['code'] == 1):
+                if deleteResp['code'] == 1:
                     # File already removed from Flicker
                     cur.execute("DELETE FROM files WHERE files_id = ?",
                                 (file[0],))
@@ -514,9 +514,9 @@ class Uploadr:
 
             Returns true if attrib['stat'] == "ok" for a given XML object
         """
-        if (res is None):
+        if res is None:
             return False
-        elif (not res == "" and res.attrib['stat'] == "ok"):
+        elif not res == "" and res.attrib['stat'] == "ok":
             return True
         else:
             return False
@@ -589,7 +589,7 @@ class Uploadr:
             cur = con.cursor()
             cur.execute('PRAGMA user_version')
             row = cur.fetchone()
-            if (row[0] == 0):
+            if row[0] == 0:
                 # Database version 1
                 NPR.niceprint('Adding last_modified column to database')
                 cur = con.cursor()
@@ -600,7 +600,7 @@ class Uploadr:
                 cur = con.cursor()
                 cur.execute('PRAGMA user_version')
                 row = cur.fetchone()
-            if (row[0] == 1):
+            if row[0] == 1:
                 # Database version 2
                 # Cater for badfiles
                 NPR.niceprint('Adding table badfiles to database')
@@ -615,7 +615,7 @@ class Uploadr:
                 cur = con.cursor()
                 cur.execute('PRAGMA user_version')
                 row = cur.fetchone()
-            if (row[0] == 2):
+            if row[0] == 2:
                 NPR.niceprint('Database version: [{!s}]'.format(row[0]))
                 # Database version 3
                 # ...for future use!
@@ -692,10 +692,7 @@ class Uploadr:
                 searchPicsInSet,
                 encoding='utf-8',
                 method='xml'))
-# <photoset id="4" primary="2483" page="1" perpage="500" pages="1" total="2">
-#   <photo id="2484" secret="123456" server="1" title="my photo" isprimary="0" />
-#   <photo id="2483" secret="123456" server="1" title="flickr rocks" isprimary="1" />
-# </photoset>
+
             totalpgs = int(searchPicsInSet.find('photoset').attrib['pages'])
             totalsets = int(searchPicsInSet.find('photoset').attrib['total'])
             for pg in range(1, totalpgs + 1):
@@ -737,16 +734,7 @@ class Uploadr:
             searchResp,
             encoding='utf-8',
             method='xml'))
-# <photosets page="1" pages="1" perpage="30" total="2" cancreate="1">
-#   <photoset id="72157626216528324" primary="5504567858" secret="017804c585" server="5174" farm="6" photos="22" videos="0" count_views="137" count_comments="0" can_comment="1" date_create="1299514498" date_update="1300335009">
-#     <title>Avis Blanche</title>
-#     <description>My Grandma's Recipe File.</description>
-#   </photoset>
-#   <photoset id="72157624618609504" primary="4847770787" secret="6abd09a292" server="4153" farm="5" photos="43" videos="12" count_views="523" count_comments="1" can_comment="1" date_create="1280530593" date_update="1308091378">
-#     <title>Mah Kittehs</title>
-#     <description>Sixty and Niner. Born on the 3rd of May, 2010, or thereabouts. Came to my place on Thursday, July 29, 2010.</description>
-#   </photoset>
-# </photosets>
+
         totalpgs = int(searchResp.find('photosets').attrib['pages'])
         totalsets = int(searchResp.find('photosets').attrib['total'])
         for pg in range(1, totalpgs + 1):
@@ -876,7 +864,7 @@ class Uploadr:
 
         return respDate
 
-#==============================================================================
+# =============================================================================
 # Main code
 #
 # nutime = time
@@ -933,8 +921,8 @@ if __name__ == "__main__":
             sys.exit()
 
     if FLICKR["api_key"] == "" or FLICKR["secret"] == "":
-        NPR.niceprint('Please enter an API key and secret in the configuration '
-                      'script file, normaly uploadr.ini (see README).')
+        NPR.niceprint('Please enter an API key and secret in the configuration'
+                      ' script file, normaly uploadr.ini (see README).')
         sys.exit()
 
     # Instantiate class Uploadr
