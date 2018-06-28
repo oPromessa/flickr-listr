@@ -393,7 +393,7 @@ class Uploadr:
                 logging.warning('Authentication required.')
                 return False
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # removeDeleteMedia
     #
     # Remove files deleted at the local source
@@ -441,7 +441,7 @@ class Uploadr:
 
         NPR.niceprint('*****Completed deleted files*****')
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # deletefile
     #
     # When EXCLUDED_FOLDERS defintion changes. You can run the -g
@@ -494,19 +494,19 @@ class Uploadr:
                 NPR.niceprint("Successful deletion.")
                 success = True
             else:
-                if (res['code'] == 1):
+                if (deleteResp['code'] == 1):
                     # File already removed from Flicker
                     cur.execute("DELETE FROM files WHERE files_id = ?",
                                 (file[0],))
                 else:
-                    self.reportError(res)
+                    self.reportError(deleteResp)
         except BaseException:
             # If you get 'attempt to write a readonly database', set 'admin'
             # as owner of the DB file (fickerdb) and 'users' as group
             print(str(sys.exc_info()))
         return success
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # isGood
     #
     def isGood(self, res):
@@ -521,7 +521,7 @@ class Uploadr:
         else:
             return False
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # reportError
     #
     def reportError(self, res):
@@ -533,7 +533,7 @@ class Uploadr:
         except BaseException:
             print("ReportError: " + str(res))
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # run
     #
     # run in daemon mode. runs upload every SLEEP_TIME
@@ -555,7 +555,7 @@ class Uploadr:
                             .format(SLEEP_TIME))
             nutime.sleep(SLEEP_TIME)
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # setupDB
     #
     # Creates the control database
@@ -630,7 +630,7 @@ class Uploadr:
         finally:
             NPR.niceprint('Completed database setup')
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # md5Checksum
     #
     def md5Checksum(self, filePath):
@@ -646,7 +646,7 @@ class Uploadr:
                 m.update(data)
             return m.hexdigest()
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # photos_searchLISTR
     #
     # List images per Sets.
@@ -672,7 +672,7 @@ class Uploadr:
 
         global nuflickr
 
-        #----------------------------------------------------------------------
+        # ---------------------------------------------------------------------
         # photos_searchLISTRGetPhotos
         #
         def photos_searchLISTRGetPhotos(self, photoset_name, photoset_id):
@@ -722,7 +722,7 @@ class Uploadr:
 
                 NPR.niceprint('next Pics in Set page:[{!s}]'.format(pg))
 
-        #----------------------------------------------------------------------
+        # ---------------------------------------------------------------------
 
         globalcounter = 0
         curcounter = 0
@@ -771,7 +771,7 @@ class Uploadr:
 
             NPR.niceprint('next Set page:[{!s}]'.format(pg))
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # people_get_photos
     #
     #   Local Wrapper for Flickr people.getPhotos
@@ -786,7 +786,7 @@ class Uploadr:
                                                   per_page=1)
         return getPhotosResp
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # photos_get_not_in_set
     #
     #   Local Wrapper for Flickr photos.getNotInSet
@@ -802,7 +802,7 @@ class Uploadr:
 
         return notinsetResp
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # photos_add_tags
     #
     #   Local Wrapper for Flickr photos.addTags
@@ -818,7 +818,7 @@ class Uploadr:
                                                       tags=tags)
         return photos_add_tagsResp
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # photos_get_info
     #
     #   Local Wrapper for Flickr photos.getInfo
@@ -834,7 +834,7 @@ class Uploadr:
 
         return photos_get_infoResp
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # photos_remove_tag
     #
     #   Local Wrapper for Flickr photos.removeTag
@@ -855,7 +855,7 @@ class Uploadr:
 
         return removeTagResp
 
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # photos_set_dates
     #
     # Update Date/Time Taken on Flickr for Video files
