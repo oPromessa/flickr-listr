@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.flickrlock
+flickrdb
+token/
+uploadr.ini
 
 # C extensions
 *.so

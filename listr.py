@@ -486,7 +486,7 @@ class Uploadr:
                 rows = cur.fetchall()
                 if (len(rows) == 1):
                     NPR.niceprint('File is the last of the set, '
-                              'deleting the set ID: ' + str(row[0]))
+                                  'deleting the set ID: ' + str(row[0]))
                     cur.execute("DELETE FROM sets WHERE set_id = ?", (row[0],))
 
                 # Delete file record from the local db
@@ -546,10 +546,11 @@ class Uploadr:
         logging.warning('Running in Daemon mode.')
         while (True):
             NPR.niceprint('Running in Daemon mode. Execute at [{!s}].'
-                      .format(nutime.strftime(UPLDRConstants.TimeFormat)))
+                          .format(nutime.strftime(UPLDRConstants.TimeFormat)))
             # run upload
             self.upload()
-            NPR.niceprint("Last check: " + str(nutime.asctime(time.localtime())))
+            NPR.niceprint("Last check: " +
+                          str(nutime.asctime(time.localtime())))
             logging.warning('Running in Daemon mode. Sleep [{!s}] seconds.'
                             .format(SLEEP_TIME))
             nutime.sleep(SLEEP_TIME)
@@ -882,8 +883,8 @@ class Uploadr:
 
 
 NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') Start time: ' +
-          nutime.strftime(UPLDRConstants.TimeFormat) +
-          ' ---------')
+              nutime.strftime(UPLDRConstants.TimeFormat) +
+              ' ---------')
 if __name__ == "__main__":
     # Ensure that only once instance of this script is running
     f = open(LOCK_PATH, 'w')
@@ -921,19 +922,19 @@ if __name__ == "__main__":
     logging.warning('FILES_DIR: [{!s}]'.format(FILES_DIR))
     if FILES_DIR == "":
         NPR.niceprint('Please configure the name of the folder [FILES_DIR] '
-                  'in the INI file [normally uploadr.ini], '
-                  'with media available to sync with Flickr.')
+                      'in the INI file [normally uploadr.ini], '
+                      'with media available to sync with Flickr.')
         sys.exit()
     else:
         if not os.path.isdir(FILES_DIR):
             NPR.niceprint('Please configure the name of an existant folder '
-                      'in the INI file [normally uploadr.ini] '
-                      'with media available to sync with Flickr.')
+                          'in the INI file [normally uploadr.ini] '
+                          'with media available to sync with Flickr.')
             sys.exit()
 
     if FLICKR["api_key"] == "" or FLICKR["secret"] == "":
         NPR.niceprint('Please enter an API key and secret in the configuration '
-                  'script file, normaly uploadr.ini (see README).')
+                      'script file, normaly uploadr.ini (see README).')
         sys.exit()
 
     # Instantiate class Uploadr
@@ -951,5 +952,5 @@ if __name__ == "__main__":
     flick.photos_searchLISTR()
 
 NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
-          nutime.strftime(UPLDRConstants.TimeFormat) +
-          ' ---------')
+              nutime.strftime(UPLDRConstants.TimeFormat) +
+              ' ---------')
