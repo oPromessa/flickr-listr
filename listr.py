@@ -680,7 +680,7 @@ class Uploadr:
             """
 
             pg = 1
-            per_page = 3
+            per_page = 100
             searchPicsInSet = nuflickr.photosets.getPhotos(
                 photoset_id=photoset_id,
                 page=pg,
@@ -729,7 +729,7 @@ class Uploadr:
         globalcounter = 0
         curcounter = 0
         pg = 1
-        per_page = 2  # 250
+        per_page = 250
         searchResp = nuflickr.photosets.getList(page=pg,
                                                 per_page=per_page)
 
