@@ -753,7 +753,8 @@ class Uploadr:
                     break
 
             for setin in searchResp.find('photosets').findall('photoset'):
-                print('set.name|pic.id|pic.title|pic.tags')
+                if args.verbose:
+                    print('set.name|pic.id|pic.title|pic.tags')
                 if args.verbose:
                     NPR.niceprint('page=[{!s}]'.format(pg))
                     NPR.niceprint('photoset.id=[{!s}]'
