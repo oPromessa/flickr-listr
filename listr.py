@@ -1,70 +1,31 @@
 #!/usr/bin/env python
 
+
 """
     by oPromessa, 2017
-    Published on https://github.com/oPromessa/flickr-deletr/
+    Published on https://github.com/oPromessa/flickr-listr/
 
-    THIS SCRIPT IS PROVIDED WITH NO WARRANTY WHATSOEVER.
-    PLEASE REVIEW THE SOURCE CODE TO MAKE SURE IT WILL WORK FOR YOUR NEEDS.
-    IF YOU FIND A BUG, PLEASE REPORT IT.
+    ## LICENSE.txt
+    --------------
+    * Check usage and licensing notice on LICENSE.txt file.
+    * PLEASE REVIEW THE SOURCE CODE TO MAKE SURE IT WILL WORK FOR YOUR NEEDS.
 
-    Some giberish. Please ignore!
+    ## CONTRIBUTIONS ARE WELCOME!
     -----------------------------
-    Area for my personal notes on on-going work! Please ignore!
-
-    ## Update History
-    -----------------
-    * Initial version
+    * Check CONTRIBUTING and TODO files
+    * FEEDBACK ON ANY TESTING AND FEEDBACK YOU DO IS GREATLY APPRECIATED.
+    * IF YOU FIND A BUG, PLEASE REPORT IT.
 
     ## Recognition
     --------------
     Inspired by:
+    * https://github.com/oPromessa/flickr-uploader/
     * https://github.com/sybrenstuvel/flickrapi
-    * http://micampe.it/things/flickruploadr
-    * https://github.com/joelmx/flickrUploadr/blob/master/python3/uploadr.py
-
-    ## Pending improvements/Known issues
-    ------------------------------------
-    * AVOID using deletr when performing massive other operations on flicr.
-
-    ## Programming Remarks
-    ----------------------
-    * Follow PEP8 coding guidelines. (see http://pep8online.com/checkresult)
-    * If using isThisStringUnicode for (something) if test else (other) make
-      sure to break lines with \ correctly. Be careful.
-    * Use niceprint function to output messages to stdout.
-    * Use logging. for CRITICAL, ERROR, WARNING, INFO, DEBUG messages to stderr
-    * Some ocasional critical messages are generated with sys.stderr.write()
-    * Specific CODING related comments marked with 'CODING'
-    * Prefix coding for some output messages:
-        *****   Section informative
-        ===     Multiprocessing related
-       ++     Exceptions handling related
-    * As far as my testing goes :) the following errors are handled:
-            Flickr reports file not loaded due to error: 5
-                [flickr:Error: 5: Filetype was not recognised]
-                Might as well log such files and marked them not to be loaded
-                again!
-            Database is locked
-            error setting video date
-            error 502: flickrapi
-            error 504: flickrapi
+    * https://github.com/joelmx/flickrUploadr/
 
     ## README.md
     ------------
-    * Check README.md file for (some) more information including:
-
-    ## Description
-    ## Features
-    ## Requirements
-    ## Setup on Synology
-    ## Configuration
-    ## Usage/Arguments/Options
-    ## Task Scheduler (cron)
-    ## Recognition
-    ## Final remarks
-    ## Q&A
-
+    * Check README.md file for information.
 """
 
 # ----------------------------------------------------------------------------
@@ -79,12 +40,16 @@ import sqlite3 as lite
 import hashlib
 import fcntl
 import errno
-import ConfigParser
-import flickrapi
 import xml
 import os.path
 import logging
 import pprint
+try:
+    import ConfigParser as ConfigParser  # Python 2
+except ImportError:
+    import configparser as ConfigParser  # Python 3
+import flickrapi
+
 
 
 #==============================================================================
