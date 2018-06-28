@@ -695,6 +695,8 @@ class Uploadr:
 
             totalpgs = int(searchPicsInSet.find('photoset').attrib['pages'])
             totalsets = int(searchPicsInSet.find('photoset').attrib['total'])
+
+            lst = []
             for pg in range(1, totalpgs + 1):
                 if pg > 1:
                     searchPicsInSet = nuflickr.photosets.getPhotos(
@@ -711,13 +713,15 @@ class Uploadr:
                         method='xml'))
 
                 for pic in searchPicsInSet.find('photoset').findall('photo'):
-                    print('{!s}|{!s}|{!s}|{!s}'
-                          .format(NPR.strunicodeout(photoset_name),
-                                  pic.attrib['id'],
-                                  NPR.strunicodeout(pic.attrib['title']),
-                                  NPR.strunicodeout(pic.attrib['tags'])))
+                    lst.append(pic.attrib['id'])
+                    # print('{!s}|{!s}|{!s}|{!s}'
+                    #       .format(NPR.strunicodeout(photoset_name),
+                    #               pic.attrib['id'],
+                    #               NPR.strunicodeout(pic.attrib['title']),
+                    #               NPR.strunicodeout(pic.attrib['tags'])))
 
                 NPR.niceprint('next Pics in Set page:[{!s}]'.format(pg))
+            return(lst)
 
         # ---------------------------------------------------------------------
 
@@ -737,6 +741,8 @@ class Uploadr:
 
         totalpgs = int(searchResp.find('photosets').attrib['pages'])
         totalsets = int(searchResp.find('photosets').attrib['total'])
+        
+        reslst=[]
         for pg in range(1, totalpgs + 1):
             if pg > 1:
                 searchResp = nuflickr.photosets.getList(page=pg,
@@ -754,10 +760,13 @@ class Uploadr:
                         NPR.strunicodeout(
                             setin.find('title').text)))
 
-                photos_searchLISTRGetPhotos(
+                lst = photos_searchLISTRGetPhotos(
                     self, setin.find('title').text, setin.attrib['id'])
 
+            reslst = reslst + lst
             NPR.niceprint('next Set page:[{!s}]'.format(pg))
+
+        return(reslst)
 
     # -------------------------------------------------------------------------
     # people_get_photos
@@ -936,18 +945,22 @@ if __name__ == "__main__":
     if not flick.checkToken():
         flick.authenticate()
 
-    cur = con.cursor()
-    try:
-        cur.execute("SELECT files_id FROM files")
-        existing_media = set(file[0] for file in cur.fetchall())
-    except lite.Error as err:
-        NPR.niceerror(caught=True,
-                      caughtprefix='+++ DB',
-                      caughtcode='015',
-                      caughtmsg='DB error on DB select: [{!s}]'
-                      .format(err.args[0]),
-                      useniceprint=True,
-                      exceptsysinfo=True)
+    con = lite.connect(DB_PATH)
+    con.text_factory = str
+
+    with con:
+        cur = con.cursor()
+        try:
+            cur.execute("SELECT files_id FROM files")
+            existing_media = set(file[0] for file in cur.fetchall())
+        except lite.Error as err:
+            NPR.niceerror(caught=True,
+                          caughtprefix='+++ DB',
+                          caughtcode='015',
+                          caughtmsg='DB error on DB select: [{!s}]'
+                          .format(err.args[0]),
+                          useniceprint=True,
+                          exceptsysinfo=True)
 
     # CODING: EXTREME
     flickr_media = flick.photos_searchLISTR()
