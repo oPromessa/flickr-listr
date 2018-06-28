@@ -307,8 +307,13 @@ class Uploadr:
         authorize_url = nuflickr.auth_url(perms=u'delete')
         print(authorize_url)
 
-        # Prompt for verifier code from the user
-        verifier = unicode(raw_input('Verifier code: '))
+        # Prompt for verifier code from the user.
+        # Python 2.7 and 3.6
+        # use "# noqa" to bypass flake8 error notifications
+        verifier = unicode(raw_input(  # noqa
+            'Verifier code (NNN-NNN-NNN): ')) \
+            if sys.version_info < (3, ) \
+            else input('Verifier code (NNN-NNN-NNN): ')
 
         if LOGGING_LEVEL <= logging.WARNING:
             logging.warning('Verifier: {!s}'.format(verifier))
@@ -709,10 +714,10 @@ class Uploadr:
 
                 for pic in searchPicsInSet.find('photoset').findall('photo'):
                     print('{!s}|{!s}|{!s}|{!s}'
-                          .format(StrUnicodeOut(photoset_name),
+                          .format(NPR.strunicodeout(photoset_name),
                                   pic.attrib['id'],
-                                  StrUnicodeOut(pic.attrib['title']),
-                                  StrUnicodeOut(pic.attrib['tags'])))
+                                  NPR.strunicodeout(pic.attrib['title']),
+                                  NPR.strunicodeout(pic.attrib['tags'])))
 
                 NPR.niceprint('next Pics in Set page:[{!s}]'.format(pg))
 
@@ -757,7 +762,7 @@ class Uploadr:
                 NPR.niceprint('photoset.id=[{!s}]'.format(setin.attrib['id']))
                 NPR.niceprint(
                     'photoset.title=[{!s}]'.format(
-                        StrUnicodeOut(
+                        NPR.strunicodeout(
                             setin.find('title').text)))
 
                 photos_searchLISTRGetPhotos(
