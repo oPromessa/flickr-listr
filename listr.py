@@ -98,15 +98,17 @@ if sys.version_info < (2, 7):
     sys.stderr.flush()
     sys.exit(1)
 else:
-    #Define LOGGING_LEVEL to allow logging even if everything's else is wrong!
+    # Define LOGGING_LEVEL to allow logging even if everything's else is wrong!
     LOGGING_LEVEL = logging.WARNING
-    sys.stderr.write('--------- '  + 'Init: ' + ' ---------\n')
+    sys.stderr.write('--------- ' + 'Init: ' + ' ---------\n')
 
 # ----------------------------------------------------------------------------
 # Constants class
 #
 # List out the constants to be used
 #
+
+
 class UPLDRConstants:
     """ UPLDRConstants class
     """
@@ -117,18 +119,19 @@ class UPLDRConstants:
     Version = '1.0.0'
 
     # -------------------------------------------------------------------------
-    # Color Codes for colorful output    
-    W  = '\033[0m'  # white (normal)
-    R  = '\033[31m' # red
-    G  = '\033[32m' # green
-    O  = '\033[33m' # orange
-    B  = '\033[34m' # blue
-    P  = '\033[35m' # purple    
+    # Color Codes for colorful output
+    W = '\033[0m'  # white (normal)
+    R = '\033[31m'  # red
+    G = '\033[32m'  # green
+    O = '\033[33m'  # orange
+    B = '\033[34m'  # blue
+    P = '\033[35m'  # purple
 
     def __init__(self):
         """ Constructor
         """
         pass
+
 
 # ----------------------------------------------------------------------------
 # Global Variables
@@ -142,6 +145,8 @@ nuflickr = None
 #
 # Returns true if String is Unicode
 #
+
+
 def isThisStringUnicode(s):
     """
     Determines if a string is Unicode (return True) or not (returns False)
@@ -187,13 +192,14 @@ def niceprint(s):
         Accounts for UTF-8 Messages
     """
     print('{}[{!s}]:[{!s:11s}]{}[{!s:8s}]:[{!s}] {!s}'.format(
-            UPLDRConstants.G,
-            nutime.strftime(UPLDRConstants.TimeFormat),
-            os.getpid(),
-            UPLDRConstants.W,
-            'PRINT',
-            'uploadr',
-            StrUnicodeOut(s)))
+        UPLDRConstants.G,
+        nutime.strftime(UPLDRConstants.TimeFormat),
+        os.getpid(),
+        UPLDRConstants.W,
+        'PRINT',
+        'uploadr',
+        StrUnicodeOut(s)))
+
 
 #==============================================================================
 # Read Config from config.ini file
@@ -221,7 +227,7 @@ DB_PATH = eval(config.get('Config', 'DB_PATH'))
 try:
     TOKEN_CACHE = eval(config.get('Config', 'TOKEN_CACHE'))
 # CODING: Should extend this control to other parameters (Enhancement #7)
-except (ConfigParser.NoOptionError, ConfigParser.NoOptionError), err:
+except (ConfigParser.NoOptionError, ConfigParser.NoOptionError) as err:
     sys.stderr.write('[{!s}]:[{!s}][WARNING ]:[deletr] ({!s}) TOKEN_CACHE '
                      'not defined or incorrect on INI file: [{!s}]. '
                      'Assuming default value [{!s}].\n'
@@ -262,19 +268,19 @@ LOGGING_LEVEL = (config.get('Config', 'LOGGING_LEVEL')
 #            <generate any further output>
 #
 if (int(LOGGING_LEVEL) if str.isdigit(LOGGING_LEVEL) else 99) not in [
-                        logging.NOTSET,
-                        logging.DEBUG,
-                        logging.INFO,
-                        logging.WARNING,
-                        logging.ERROR,
-                        logging.CRITICAL]:
+        logging.NOTSET,
+        logging.DEBUG,
+        logging.INFO,
+        logging.WARNING,
+        logging.ERROR,
+        logging.CRITICAL]:
     LOGGING_LEVEL = logging.WARNING
     sys.stderr.write('[{!s}]:[WARNING ]:[deletr] LOGGING_LEVEL '
                      'not defined or incorrect on INI file: [{!s}]. '
                      'Assuming WARNING level.\n'.format(
-                            nutime.strftime(UPLDRConstants.TimeFormat),
-                            os.path.join(os.path.dirname(sys.argv[0]),
-                                         "uploadr.ini")))
+                         nutime.strftime(UPLDRConstants.TimeFormat),
+                         os.path.join(os.path.dirname(sys.argv[0]),
+                                      "uploadr.ini")))
 # Force conversion of LOGGING_LEVEL into int() for later use in conditionals
 LOGGING_LEVEL = int(LOGGING_LEVEL)
 logging.basicConfig(stream=sys.stderr,
@@ -302,7 +308,7 @@ logging.basicConfig(stream=sys.stderr,
 #                                     'INFO UNDER min WARNING LEVEL'))
 if LOGGING_LEVEL <= logging.INFO:
     niceprint('Pretty Print for {!s}'.format(
-                                'FLICKR Configuration:'))
+        'FLICKR Configuration:'))
     pprint.pprint(FLICKR)
 
 #==============================================================================
@@ -313,6 +319,8 @@ if LOGGING_LEVEL <= logging.INFO:
 #
 #   Main class for uploading of files.
 #
+
+
 class Uploadr:
     """ Uploadr class
     """
@@ -386,9 +394,9 @@ class Uploadr:
 
         if LOGGING_LEVEL <= logging.WARNING:
             logging.critical('{!s} with {!s} permissions: {!s}'.format(
-                                        'Check Authentication',
-                                        'delete',
-                                        nuflickr.token_valid(perms='delete')))
+                'Check Authentication',
+                'delete',
+                nuflickr.token_valid(perms='delete')))
             logging.critical('Token Cache: {!s}', nuflickr.token_cache.token)
 
     # -------------------------------------------------------------------------
@@ -420,7 +428,7 @@ class Uploadr:
             else:
                 logging.info('Token Non-Existant.')
                 return None
-        except:
+        except BaseException:
             niceprint('Unexpected error:' + sys.exc_info()[0])
             raise
 
@@ -522,22 +530,22 @@ class Uploadr:
 
         if args.dry_run:
             print(u'Deleting file: ' + file[1].encode('utf-8')) \
-                  if isThisStringUnicode(file[1]) \
-                  else ("Deleting file: " + file[1])
+                if isThisStringUnicode(file[1]) \
+                else ("Deleting file: " + file[1])
             return True
 
         success = False
         niceprint('Deleting file: ' + file[1].encode('utf-8')) \
-                  if isThisStringUnicode(file[1]) \
-                  else ('Deleting file: ' + file[1])
+            if isThisStringUnicode(file[1]) \
+            else ('Deleting file: ' + file[1])
         try:
             deleteResp = nuflickr.photos.delete(
-                                        photo_id=str(file[0]))
+                photo_id=str(file[0]))
             logging.info('Output for {!s}:'.format('deleteResp'))
             logging.info(xml.etree.ElementTree.tostring(
-                                    deleteResp,
-                                    encoding='utf-8',
-                                    method='xml'))
+                deleteResp,
+                encoding='utf-8',
+                method='xml'))
             if (self.isGood(deleteResp)):
                 # Find out if the file is the last item in a set, if so,
                 # remove the set from the local db
@@ -563,7 +571,7 @@ class Uploadr:
                                 (file[0],))
                 else:
                     self.reportError(res)
-        except:
+        except BaseException:
             # If you get 'attempt to write a readonly database', set 'admin'
             # as owner of the DB file (fickerdb) and 'users' as group
             print(str(sys.exc_info()))
@@ -593,7 +601,7 @@ class Uploadr:
 
         try:
             print("ReportError: " + str(res['code'] + " " + res['message']))
-        except:
+        except BaseException:
             print("ReportError: " + str(res))
 
     #--------------------------------------------------------------------------
@@ -649,7 +657,8 @@ class Uploadr:
             # [1] = with last_modified column
             # [2] = badfiles table added
             cur = con.cursor()
-            cur.execute('PRAGMA user_version'); row = cur.fetchone()
+            cur.execute('PRAGMA user_version')
+            row = cur.fetchone()
             if (row[0] == 0):
                 # Database version 1
                 niceprint('Adding last_modified column to database')
@@ -659,7 +668,8 @@ class Uploadr:
                 con.commit()
                 # obtain new version to continue updating database
                 cur = con.cursor()
-                cur.execute('PRAGMA user_version'); row = cur.fetchone()
+                cur.execute('PRAGMA user_version')
+                row = cur.fetchone()
             if (row[0] == 1):
                 # Database version 2
                 # Cater for badfiles
@@ -671,9 +681,10 @@ class Uploadr:
                             'last_modified REAL)')
                 cur.execute('CREATE UNIQUE INDEX IF NOT EXISTS badfileindex '
                             'ON badfiles (path)')
-                con.commit();
+                con.commit()
                 cur = con.cursor()
-                cur.execute('PRAGMA user_version'); row = cur.fetchone()
+                cur.execute('PRAGMA user_version')
+                row = cur.fetchone()
             if (row[0] == 2):
                 niceprint('Database version: [{!s}]'.format(row[0]))
                 # Database version 3
@@ -681,7 +692,7 @@ class Uploadr:
             # Closing DB connection
             if con is not None:
                 con.close()
-        except lite.Error, e:
+        except lite.Error as e:
             niceprint("setup DB Error: %s" % e.args[0])
             if con is not None:
                 con.close()
@@ -713,10 +724,10 @@ class Uploadr:
     #
     # Will return searchResp and if isgood(searchResp) will provide also
     # searchtotal and id of first photo
-    
+
     # Sample response:
     # <photos page="2" pages="89" perpage="10" total="881">
-    #     <photo id="2636" owner="47058503995@N01" 
+    #     <photo id="2636" owner="47058503995@N01"
     #             secret="a123456" server="2" title="test_04"
     #             ispublic="1" isfriend="0" isfamily="0" />
     #     <photo id="2635" owner="47058503995@N01"
@@ -733,69 +744,69 @@ class Uploadr:
 
         #----------------------------------------------------------------------
         # photos_searchLISTRGetPhotos
-        #        
+        #
         def photos_searchLISTRGetPhotos(self, photoset_name, photoset_id):
             """
             """
-            
+
             pg = 1
             per_page = 3
             searchPicsInSet = nuflickr.photosets.getPhotos(
-                                        photoset_id=photoset_id,
-                                        page=pg,
-                                        per_page=per_page,
-                                        extras='tags')
+                photoset_id=photoset_id,
+                page=pg,
+                per_page=per_page,
+                extras='tags')
             if not (self.isGood(searchPicsInSet)):
                 raise
             logging.error(xml.etree.ElementTree.tostring(
-                                searchPicsInSet,
-                                encoding='utf-8',
-                                method='xml'))
+                searchPicsInSet,
+                encoding='utf-8',
+                method='xml'))
 # <photoset id="4" primary="2483" page="1" perpage="500" pages="1" total="2">
 #   <photo id="2484" secret="123456" server="1" title="my photo" isprimary="0" />
 #   <photo id="2483" secret="123456" server="1" title="flickr rocks" isprimary="1" />
 # </photoset>
             totalpgs = int(searchPicsInSet.find('photoset').attrib['pages'])
             totalsets = int(searchPicsInSet.find('photoset').attrib['total'])
-            for pg in range(1, totalpgs+1):
-                if pg > 1:  
+            for pg in range(1, totalpgs + 1):
+                if pg > 1:
                     searchPicsInSet = nuflickr.photosets.getPhotos(
-                                            photoset_id=photoset_id,
-                                            page=pg,
-                                            per_page=per_page,
-                                            extras='tags')
+                        photoset_id=photoset_id,
+                        page=pg,
+                        per_page=per_page,
+                        extras='tags')
                     if not (self.isGood(searchPicsInSet)):
                         raise
                         break
                     logging.error(xml.etree.ElementTree.tostring(
-                                        searchPicsInSet,
-                                        encoding='utf-8',
-                                        method='xml'))            
-            
+                        searchPicsInSet,
+                        encoding='utf-8',
+                        method='xml'))
+
                 for pic in searchPicsInSet.find('photoset').findall('photo'):
                     print('{!s}|{!s}|{!s}|{!s}'
-                              .format(StrUnicodeOut(photoset_name),
-                                      pic.attrib['id'],
-                                      StrUnicodeOut(pic.attrib['title']),
-                                      StrUnicodeOut(pic.attrib['tags'])))
-    
+                          .format(StrUnicodeOut(photoset_name),
+                                  pic.attrib['id'],
+                                  StrUnicodeOut(pic.attrib['title']),
+                                  StrUnicodeOut(pic.attrib['tags'])))
+
                 niceprint('next Pics in Set page:[{!s}]'.format(pg))
-                    
+
         #----------------------------------------------------------------------
 
         globalcounter = 0
         curcounter = 0
         pg = 1
-        per_page=2 # 250
+        per_page = 2  # 250
         searchResp = nuflickr.photosets.getList(page=pg,
                                                 per_page=per_page)
-    
+
         if not (self.isGood(searchResp)):
             raise
         logging.error(xml.etree.ElementTree.tostring(
-                            searchResp,
-                            encoding='utf-8',
-                            method='xml'))
+            searchResp,
+            encoding='utf-8',
+            method='xml'))
 # <photosets page="1" pages="1" perpage="30" total="2" cancreate="1">
 #   <photoset id="72157626216528324" primary="5504567858" secret="017804c585" server="5174" farm="6" photos="22" videos="0" count_views="137" count_comments="0" can_comment="1" date_create="1299514498" date_update="1300335009">
 #     <title>Avis Blanche</title>
@@ -805,27 +816,31 @@ class Uploadr:
 #     <title>Mah Kittehs</title>
 #     <description>Sixty and Niner. Born on the 3rd of May, 2010, or thereabouts. Came to my place on Thursday, July 29, 2010.</description>
 #   </photoset>
-# </photosets>          
+# </photosets>
         totalpgs = int(searchResp.find('photosets').attrib['pages'])
         totalsets = int(searchResp.find('photosets').attrib['total'])
-        for pg in range(1, totalpgs+1):
-            if pg >1:
+        for pg in range(1, totalpgs + 1):
+            if pg > 1:
                 searchResp = nuflickr.photosets.getList(page=pg,
                                                         per_page=per_page)
                 if not (self.isGood(searchResp)):
                     raise
                     break
-           
+
             for setin in searchResp.find('photosets').findall('photoset'):
                 print('set.name|pic.id|pic.title|pic.tags')
                 niceprint('page=[{!s}]'.format(pg))
                 niceprint('photoset.id=[{!s}]'.format(setin.attrib['id']))
-                niceprint('photoset.title=[{!s}]'.format(StrUnicodeOut(setin.find('title').text)))
-                
-                photos_searchLISTRGetPhotos(self, setin.find('title').text, setin.attrib['id'])
+                niceprint(
+                    'photoset.title=[{!s}]'.format(
+                        StrUnicodeOut(
+                            setin.find('title').text)))
+
+                photos_searchLISTRGetPhotos(
+                    self, setin.find('title').text, setin.attrib['id'])
 
             niceprint('next Set page:[{!s}]'.format(pg))
-                
+
     #--------------------------------------------------------------------------
     # people_get_photos
     #
@@ -925,9 +940,9 @@ class Uploadr:
                                             date_taken=datetxt)
         logging.info('Output for {!s}:'.format('respDate'))
         logging.info(xml.etree.ElementTree.tostring(
-                                respDate,
-                                encoding='utf-8',
-                                method='xml'))
+            respDate,
+            encoding='utf-8',
+            method='xml'))
 
         return respDate
 
@@ -935,6 +950,7 @@ class Uploadr:
 # Main code
 #
 # nutime = time
+
 
 niceprint('--------- (V' + UPLDRConstants.Version + ') Start time: ' +
           nutime.strftime(UPLDRConstants.TimeFormat) +
@@ -944,17 +960,17 @@ if __name__ == "__main__":
     f = open(LOCK_PATH, 'w')
     try:
         fcntl.lockf(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except IOError, e:
+    except IOError as e:
         if e.errno == errno.EAGAIN:
             sys.stderr.write('[{!s}] Script already running.\n'
                              .format(
-                                nutime.strftime(UPLDRConstants.TimeFormat)))
+                                 nutime.strftime(UPLDRConstants.TimeFormat)))
             sys.exit(-1)
         raise
     parser = argparse.ArgumentParser(
-                        description='Upload files to Flickr. '
-                                    'Uses uploadr.ini as config file.'
-                        )
+        description='Upload files to Flickr. '
+        'Uses uploadr.ini as config file.'
+    )
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Provides some more verbose output. '
                              'Will provide progress information on upload. '
@@ -1004,7 +1020,7 @@ if __name__ == "__main__":
 
     # CODING: EXTREME
     flick.photos_searchLISTR()
-        
+
 niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
           nutime.strftime(UPLDRConstants.TimeFormat) +
           ' ---------')
