@@ -720,7 +720,8 @@ class Uploadr:
                     #               NPR.strunicodeout(pic.attrib['title']),
                     #               NPR.strunicodeout(pic.attrib['tags'])))
 
-                NPR.niceprint('next Pics in Set page:[{!s}]'.format(pg))
+                if args.verbose:
+                    NPR.niceprint('next Pics in Set page:[{!s}]'.format(pg))
             return(lst)
 
         # ---------------------------------------------------------------------
@@ -753,12 +754,14 @@ class Uploadr:
 
             for setin in searchResp.find('photosets').findall('photoset'):
                 print('set.name|pic.id|pic.title|pic.tags')
-                NPR.niceprint('page=[{!s}]'.format(pg))
-                NPR.niceprint('photoset.id=[{!s}]'.format(setin.attrib['id']))
-                NPR.niceprint(
-                    'photoset.title=[{!s}]'.format(
-                        NPR.strunicodeout(
-                            setin.find('title').text)))
+                if args.verbose:
+                    NPR.niceprint('page=[{!s}]'.format(pg))
+                    NPR.niceprint('photoset.id=[{!s}]'
+                                  .format(setin.attrib['id']))
+                    NPR.niceprint(
+                        'photoset.title=[{!s}]'.format(
+                            NPR.strunicodeout(
+                                setin.find('title').text)))
 
                 lst = photos_searchLISTRGetPhotos(
                     self, setin.find('title').text, setin.attrib['id'])
@@ -969,13 +972,13 @@ if __name__ == "__main__":
     NPR.niceprint('----------------Local Media Only: {!s}'
                   .format(len(localmediaonly)))
     for i in localmediaonly:
-        print('{!s}', i)
+        print('{!s}'.format(i))
 
     flickrmediaonly = set(flickr_media) - set(existing_media)
     NPR.niceprint('----------------Flickr Media Only: {!s}'
                   .format(len(flickrmediaonly)))
     for i in flickrmediaonly:
-        print('{!s}', i)
+        print('{!s}'.format(i))
 
 NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
               nutime.strftime(UPLDRConstants.TimeFormat) +
