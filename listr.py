@@ -768,7 +768,8 @@ class Uploadr:
                     self, setin.find('title').text, setin.attrib['id'])
 
             reslst = reslst + lst
-            NPR.niceprint('next Set page:[{!s}]'.format(pg))
+            if args.verbose:
+                NPR.niceprint('next Set page:[{!s}]'.format(pg))
 
         return(reslst)
 
