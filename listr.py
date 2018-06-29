@@ -40,13 +40,13 @@ from __future__ import division    # This way: 3 / 2 == 1.5; 3 // 2 == 1
 import sys
 import argparse
 import os
+import os.path
 import time
 import sqlite3 as lite
 import hashlib
 import fcntl
 import errno
 import xml
-import os.path
 import logging
 import pprint
 try:
@@ -212,24 +212,7 @@ logging.basicConfig(stream=sys.stderr,
                     datefmt=UPLDRConstants.TimeFormat,
                     format='[%(asctime)s]:[%(processName)s][%(levelname)-8s]'
                            ':[%(name)s] %(message)s')
-# =============================================================================
-# Test section for logging.
-# CODING: Uncomment for testing.
-#   Only applicable if LOGGING_LEVEL is INFO or below (DEBUG, NOTSET)
-#
-# if LOGGING_LEVEL <= logging.INFO:
-#     logging.info(u'sys.getfilesystemencoding:[{!s}]'.
-#                     format(sys.getfilesystemencoding()))
-#     logging.info('LOGGING_LEVEL Value: {!s}'.format(LOGGING_LEVEL))
-#     if LOGGING_LEVEL <= logging.WARNING:
-#         logging.critical('Message with {!s}'.format(
-#                                     'CRITICAL UNDER min WARNING LEVEL'))
-#         logging.error('Message with {!s}'.format(
-#                                     'ERROR UNDER min WARNING LEVEL'))
-#         logging.warning('Message with {!s}'.format(
-#                                     'WARNING UNDER min WARNING LEVEL'))
-#         logging.info('Message with {!s}'.format(
-#                                     'INFO UNDER min WARNING LEVEL'))
+
 if LOGGING_LEVEL <= logging.INFO:
     NPR.niceprint('Pretty Print for {!s}'
                   .format('FLICKR Configuration:'))
@@ -713,15 +696,20 @@ class Uploadr:
                         method='xml'))
 
                 for pic in searchPicsInSet.find('photoset').findall('photo'):
-                    lst.append(pic.attrib['id'])
-                    # print('{!s}|{!s}|{!s}|{!s}'
-                    #       .format(NPR.strunicodeout(photoset_name),
-                    #               pic.attrib['id'],
-                    #               NPR.strunicodeout(pic.attrib['title']),
-                    #               NPR.strunicodeout(pic.attrib['tags'])))
+                    lst.append((int(pic.attrib['id']),
+                                NPR.strunicodeout(pic.attrib['title'])))
+                    if args.verbose:
+                        print('{!s}|{!s}|{!s}|{!s}'
+                              .format(NPR.strunicodeout(photoset_name),
+                                      pic.attrib['id'],
+                                      NPR.strunicodeout(pic.attrib['title']),
+                                      NPR.strunicodeout(pic.attrib['tags'])))
 
                 if args.verbose:
                     NPR.niceprint('next Pics in Set page:[{!s}]'.format(pg))
+
+            if args.verbose:
+                NPR.niceprint('Returning lst with len=[{!s}]'.format(len(lst)))
             return(lst)
 
         # ---------------------------------------------------------------------
@@ -742,7 +730,7 @@ class Uploadr:
 
         totalpgs = int(searchResp.find('photosets').attrib['pages'])
         totalsets = int(searchResp.find('photosets').attrib['total'])
-        
+
         reslst=[]
         for pg in range(1, totalpgs + 1):
             if pg > 1:
@@ -764,10 +752,13 @@ class Uploadr:
                             NPR.strunicodeout(
                                 setin.find('title').text)))
 
-                lst = photos_searchLISTRGetPhotos(
+                alst = photos_searchLISTRGetPhotos(
                     self, setin.find('title').text, setin.attrib['id'])
 
-            reslst = reslst + lst
+                reslst = reslst + alst
+                if args.verbose:
+                    NPR.niceprint('Current reslst len=[{!s}]'
+                                  .format(len(reslst)))
             if args.verbose:
                 NPR.niceprint('next Set page:[{!s}]'.format(pg))
 
@@ -952,12 +943,16 @@ if __name__ == "__main__":
 
     con = lite.connect(DB_PATH)
     con.text_factory = str
+    con.create_function("basename", 1, os.path.basename)
+    # Enable traceback return from create_function.
+    lite.enable_callback_tracebacks(True)
 
     with con:
         cur = con.cursor()
         try:
-            cur.execute("SELECT files_id FROM files")
-            existing_media = set(file[0] for file in cur.fetchall())
+            cur.execute("SELECT files_id, basename(path), path FROM files")
+            existing_media = cur.fetchall()
+            existing_media = set(existing_media)
         except lite.Error as err:
             NPR.niceerror(caught=True,
                           caughtprefix='+++ DB',
@@ -968,19 +963,47 @@ if __name__ == "__main__":
                           exceptsysinfo=True)
 
     # CODING: EXTREME
+    print(len(existing_media))
+    existing_media.pop()
+    existing_media.pop()
+    existing_media.pop()
+    existing_media.pop()
+    existing_media.pop()
+    print(len(existing_media))
+
     flickr_media = flick.photos_searchLISTR()
 
-    localmediaonly = set(existing_media) - set(flickr_media)
+    filesid_existing_media = [ key[0] for key in existing_media]
+    filesid_flickr_media = [ key[0] for key in flickr_media]
+    print(len(filesid_flickr_media))
+    filesid_flickr_media.pop()
+    filesid_flickr_media.pop()
+    print(len(filesid_flickr_media))
+
+    NPR.niceprint('Len existing_media={!s}'
+                  .format(len(filesid_existing_media)))
+    print(filesid_existing_media)
+    print('---------------------')
+    NPR.niceprint('Len flickr_media={!s}'.format(len(filesid_flickr_media)))
+    print(filesid_flickr_media)
+
+    localmediaonly = set(filesid_existing_media) - set(filesid_flickr_media)
     NPR.niceprint('----------------Local Media Only: {!s}'
                   .format(len(localmediaonly)))
     for i in localmediaonly:
-        print('{!s}'.format(i))
+        found = [ path[1] for path in existing_media if path[0] == i ]
+        print('{!s}|{!s}'.format(i, found))
 
-    flickrmediaonly = set(flickr_media) - set(existing_media)
+    flickrmediaonly = set(filesid_flickr_media) - set(filesid_existing_media)
     NPR.niceprint('----------------Flickr Media Only: {!s}'
                   .format(len(flickrmediaonly)))
     for i in flickrmediaonly:
-        print('{!s}'.format(i))
+        found = [ title[1] for title in flickr_media if title[0] == i ]
+        print('{!s}|{!s}'.format(i, found))
+        # for title in flickr_media:
+        #     print(title)
+        #     print(' Test=', title[0] == i)
+        #     print(title[1] if title[0] == i else 'Not Found')
 
 NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
               nutime.strftime(UPLDRConstants.TimeFormat) +
