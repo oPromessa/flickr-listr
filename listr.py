@@ -706,6 +706,7 @@ class Uploadr:
         totalpgs = int(searchResp.find('photosets').attrib['pages'])
         totalsets = int(searchResp.find('photosets').attrib['total'])
 
+        cset = 0
         reslst=[]
         for pg in range(1, totalpgs + 1):
             if pg > 1:
@@ -715,7 +716,6 @@ class Uploadr:
                     raise
                     break
 
-            cset = 0
             for setin in searchResp.find('photosets').findall('photoset'):
                 if args.verbose:
                     print('set.name|pic.id|pic.title|pic.tags')
