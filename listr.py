@@ -671,8 +671,8 @@ class Uploadr:
 
                 for pic in searchPicsInSet.find('photoset').findall('photo'):
                     lst.append((int(pic.attrib['id']),
-                                NPR.strunicodeout(pic.attrib['title'])),
-                                NPR.strunicodeout(photoset_name))
+                                NPR.strunicodeout(pic.attrib['title']),
+                                NPR.strunicodeout(photoset_name)))
                     if args.verbose:
                         print('{!s}|{!s}|{!s}|{!s}'
                               .format(NPR.strunicodeout(photoset_name),
