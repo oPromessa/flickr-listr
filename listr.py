@@ -242,32 +242,6 @@ class Uploadr:
         self.token = self.getCachedToken()
 
     # -------------------------------------------------------------------------
-    # niceprocessedfiles
-    #
-    # Nicely print number of processed files
-    #
-    def niceprocessedfiles(self, count, total):
-        """
-        niceprocessedfiles
-
-        count = Nicely print number of processed files rounded to 100's
-        total = if true shows the total (to be used at the end of processing)
-        """
-
-        if not total:
-            if count % 100 == 0:
-                NPR.niceprint('\t' +
-                              str(count) +
-                              ' files processed (uploaded, md5ed '
-                              'or timestamp checked)')
-        else:
-            if count % 100 > 0:
-                NPR.niceprint('\t' +
-                              str(count) +
-                              ' files processed (uploaded, md5ed '
-                              'or timestamp checked)')
-
-    # -------------------------------------------------------------------------
     # authenticate
     #
     # Authenticates via flickrapi on flickr.com
@@ -740,6 +714,7 @@ class Uploadr:
                     raise
                     break
 
+            cset = 0
             for setin in searchResp.find('photosets').findall('photoset'):
                 if args.verbose:
                     print('set.name|pic.id|pic.title|pic.tags')
@@ -756,6 +731,9 @@ class Uploadr:
                     self, setin.find('title').text, setin.attrib['id'])
 
                 reslst = reslst + alst
+
+                cset = cset + 1
+                NPR.niceprocessedfiles(cset, totalsets, True)
                 if args.verbose:
                     NPR.niceprint('Current reslst len=[{!s}]'
                                   .format(len(reslst)))
