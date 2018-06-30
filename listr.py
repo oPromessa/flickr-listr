@@ -734,7 +734,7 @@ class Uploadr:
                 reslst = reslst + alst
 
                 cset = cset + 1
-                NPR.niceprocessedfiles(cset, totalsets, True)
+                NPR.niceprocessedfiles(cset, totalsets, False)
                 if args.verbose:
                     NPR.niceprint('Current reslst len=[{!s}]'
                                   .format(len(reslst)))
