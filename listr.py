@@ -941,22 +941,22 @@ if __name__ == "__main__":
                           exceptsysinfo=True)
 
     # CODING: EXTREME
-    print(len(existing_media))
-    existing_media.pop()
-    existing_media.pop()
-    existing_media.pop()
-    existing_media.pop()
-    existing_media.pop()
-    print(len(existing_media))
+    # print(len(existing_media))
+    # existing_media.pop()
+    # existing_media.pop()
+    # existing_media.pop()
+    # existing_media.pop()
+    # existing_media.pop()
+    NPR.niceprint('ExistingMedia={!s}'.format(len(existing_media)))
 
     flickr_media = flick.photos_searchLISTR()
 
     filesid_existing_media = [ key[0] for key in existing_media]
     filesid_flickr_media = [ key[0] for key in flickr_media]
-    print(len(filesid_flickr_media))
-    filesid_flickr_media.pop()
-    filesid_flickr_media.pop()
-    print(len(filesid_flickr_media))
+    # print(len(filesid_flickr_media))
+    # filesid_flickr_media.pop()
+    # filesid_flickr_media.pop()
+    NPR.niceprint('FlickrMedia={!s}'.format(len(filesid_flickr_media)))
 
     NPR.niceprint('Len existing_media={!s}'
                   .format(len(filesid_existing_media)))
