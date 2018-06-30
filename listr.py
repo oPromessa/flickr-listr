@@ -927,15 +927,15 @@ if __name__ == "__main__":
     localmediaonly = set(filesid_existing_media) - set(filesid_flickr_media)
     NPR.niceprint('------Local Media Only: {!s}'.format(len(localmediaonly)))
     for i in localmediaonly:
-        found = [path[1] for path in existing_media if path[0] == i ]
-        setfound = [path[2] for path in existing_media if path[0] == i ]
+        found = [path[1] for path in existing_media if path[0] == i]
+        setfound = [path[2] for path in existing_media if path[0] == i]
         print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
     flickrmediaonly = set(filesid_flickr_media) - set(filesid_existing_media)
     NPR.niceprint('------Flickr Media Only: {!s}'.format(len(flickrmediaonly)))
     for i in flickrmediaonly:
-        found = [title[1] for title in flickr_media if title[0] == i ]
-        setfound = [title[2] for title in flickr_media if title[0] == i ]
+        found = [title[1] for title in flickr_media if title[0] == i]
+        setfound = [title[2] for title in flickr_media if title[0] == i]
         print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
 NPR.niceprint('--------- (V' + UPLDR_K.Version + ') End time: ' +
