@@ -671,7 +671,8 @@ class Uploadr:
 
                 for pic in searchPicsInSet.find('photoset').findall('photo'):
                     lst.append((int(pic.attrib['id']),
-                                NPR.strunicodeout(pic.attrib['title'])))
+                                NPR.strunicodeout(pic.attrib['title'])),
+                                NPR.strunicodeout(photoset_name))
                     if args.verbose:
                         print('{!s}|{!s}|{!s}|{!s}'
                               .format(NPR.strunicodeout(photoset_name),
@@ -940,48 +941,31 @@ if __name__ == "__main__":
                           useniceprint=True,
                           exceptsysinfo=True)
 
-    # CODING: EXTREME
-    # print(len(existing_media))
-    # existing_media.pop()
-    # existing_media.pop()
-    # existing_media.pop()
-    # existing_media.pop()
-    # existing_media.pop()
-    NPR.niceprint('ExistingMedia={!s}'.format(len(existing_media)))
+    filesid_existing_media = [ key[0] for key in existing_media]
+    NPR.niceprint('Len local_media={!s}'.format(len(filesid_existing_media)))
+    if args.verbose:
+        print(filesid_existing_media)
 
     flickr_media = flick.photos_searchLISTR()
 
-    filesid_existing_media = [ key[0] for key in existing_media]
     filesid_flickr_media = [ key[0] for key in flickr_media]
-    # print(len(filesid_flickr_media))
-    # filesid_flickr_media.pop()
-    # filesid_flickr_media.pop()
-    NPR.niceprint('FlickrMedia={!s}'.format(len(filesid_flickr_media)))
-
-    NPR.niceprint('Len existing_media={!s}'
-                  .format(len(filesid_existing_media)))
-    print(filesid_existing_media)
-    print('---------------------')
     NPR.niceprint('Len flickr_media={!s}'.format(len(filesid_flickr_media)))
-    print(filesid_flickr_media)
+    if args.verbose:
+        print(filesid_flickr_media)
 
     localmediaonly = set(filesid_existing_media) - set(filesid_flickr_media)
-    NPR.niceprint('----------------Local Media Only: {!s}'
-                  .format(len(localmediaonly)))
+    NPR.niceprint('------Local Media Only: {!s}'.format(len(localmediaonly)))
     for i in localmediaonly:
         found = [ path[1] for path in existing_media if path[0] == i ]
-        print('{!s}|{!s}'.format(i, found))
+        setfound = [ path[2] for path in existing_media if path[0] == i ]
+        print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
     flickrmediaonly = set(filesid_flickr_media) - set(filesid_existing_media)
-    NPR.niceprint('----------------Flickr Media Only: {!s}'
-                  .format(len(flickrmediaonly)))
+    NPR.niceprint('------Flickr Media Only: {!s}'.format(len(flickrmediaonly)))
     for i in flickrmediaonly:
         found = [ title[1] for title in flickr_media if title[0] == i ]
-        print('{!s}|{!s}'.format(i, found))
-        # for title in flickr_media:
-        #     print(title)
-        #     print(' Test=', title[0] == i)
-        #     print(title[1] if title[0] == i else 'Not Found')
+        setfound = [ title[2] for title in flickr_media if title[0] == i ]
+        print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
 NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
               nutime.strftime(UPLDRConstants.TimeFormat) +
