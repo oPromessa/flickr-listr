@@ -85,37 +85,8 @@ else:
     # Define LOGGING_LEVEL to allow logging even if everything's else is wrong!
     LOGGING_LEVEL = logging.WARNING
     sys.stderr.write('--------- ' + 'Init: ' + ' ---------\n')
-
-# ----------------------------------------------------------------------------
-# Constants class
-#
-# List out the constants to be used
-#
-
-
-class UPLDRConstants:
-    """ UPLDRConstants class
-    """
-
-    TimeFormat = '%Y.%m.%d %H:%M:%S'
-    # For future use...
-    # UTF = 'utf-8'
-    Version = '1.0.0'
-
-    # -------------------------------------------------------------------------
-    # Color Codes for colorful output
-    W = '\033[0m'  # white (normal)
-    R = '\033[31m'  # red
-    G = '\033[32m'  # green
-    O = '\033[33m'  # orange
-    B = '\033[34m'  # blue
-    P = '\033[35m'  # purple
-
-    def __init__(self):
-        """ Constructor
-        """
-        pass
-
+# Getting definitions from Konstants
+UPLDR_K = KonstantsClass.Konstants()
 
 # ----------------------------------------------------------------------------
 # Global Variables
@@ -135,7 +106,7 @@ INIFiles = config.read(os.path.join(os.path.dirname(sys.argv[0]),
 if not INIFiles:
     sys.stderr.write('[{!s}]:[{!s}][ERROR   ]:[uploadr] '
                      'INI file: [{!s}] not found!.\n'
-                     .format(nutime.strftime(UPLDRConstants.TimeFormat),
+                     .format(nutime.strftime(UPLDR_K.TimeFormat),
                              os.getpid(),
                              os.path.join(os.path.dirname(sys.argv[0]),
                                           'uploadr.ini')))
@@ -155,7 +126,7 @@ except (ConfigParser.NoOptionError, ConfigParser.NoOptionError) as err:
     sys.stderr.write('[{!s}]:[{!s}][WARNING ]:[deletr] ({!s}) TOKEN_CACHE '
                      'not defined or incorrect on INI file: [{!s}]. '
                      'Assuming default value [{!s}].\n'
-                     .format(nutime.strftime(UPLDRConstants.TimeFormat),
+                     .format(nutime.strftime(UPLDR_K.TimeFormat),
                              os.getpid(),
                              str(err),
                              os.path.join(os.path.dirname(sys.argv[0]),
@@ -202,14 +173,14 @@ if (int(LOGGING_LEVEL) if str.isdigit(LOGGING_LEVEL) else 99) not in [
     sys.stderr.write('[{!s}]:[WARNING ]:[deletr] LOGGING_LEVEL '
                      'not defined or incorrect on INI file: [{!s}]. '
                      'Assuming WARNING level.\n'.format(
-                         nutime.strftime(UPLDRConstants.TimeFormat),
+                         nutime.strftime(UPLDR_K.TimeFormat),
                          os.path.join(os.path.dirname(sys.argv[0]),
                                       "uploadr.ini")))
 # Force conversion of LOGGING_LEVEL into int() for later use in conditionals
 LOGGING_LEVEL = int(LOGGING_LEVEL)
 logging.basicConfig(stream=sys.stderr,
                     level=int(LOGGING_LEVEL),
-                    datefmt=UPLDRConstants.TimeFormat,
+                    datefmt=UPLDR_K.TimeFormat,
                     format='[%(asctime)s]:[%(processName)s][%(levelname)-8s]'
                            ':[%(name)s] %(message)s')
 
@@ -503,7 +474,7 @@ class Uploadr:
         logging.warning('Running in Daemon mode.')
         while (True):
             NPR.niceprint('Running in Daemon mode. Execute at [{!s}].'
-                          .format(nutime.strftime(UPLDRConstants.TimeFormat)))
+                          .format(nutime.strftime(UPLDR_K.TimeFormat)))
             # run upload
             self.upload()
             NPR.niceprint("Last check: " +
@@ -707,7 +678,7 @@ class Uploadr:
         totalsets = int(searchResp.find('photosets').attrib['total'])
 
         cset = 0
-        reslst=[]
+        reslst = []
         for pg in range(1, totalpgs + 1):
             if pg > 1:
                 searchResp = nuflickr.photosets.getList(page=pg,
@@ -854,8 +825,8 @@ class Uploadr:
 # nutime = time
 
 
-NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') Start time: ' +
-              nutime.strftime(UPLDRConstants.TimeFormat) +
+NPR.niceprint('--------- (V' + UPLDR_K.Version + ') Start time: ' +
+              nutime.strftime(UPLDR_K.TimeFormat) +
               ' ---------')
 if __name__ == "__main__":
     # Ensure that only once instance of this script is running
@@ -866,7 +837,7 @@ if __name__ == "__main__":
         if e.errno == errno.EAGAIN:
             sys.stderr.write('[{!s}] Script already running.\n'
                              .format(
-                                 nutime.strftime(UPLDRConstants.TimeFormat)))
+                                 nutime.strftime(UPLDR_K.TimeFormat)))
             sys.exit(-1)
         raise
     parser = argparse.ArgumentParser(
@@ -941,14 +912,14 @@ if __name__ == "__main__":
                           useniceprint=True,
                           exceptsysinfo=True)
 
-    filesid_existing_media = [ key[0] for key in existing_media]
+    filesid_existing_media = [key[0] for key in existing_media]
     NPR.niceprint('Len local_media={!s}'.format(len(filesid_existing_media)))
     if args.verbose:
         print(filesid_existing_media)
 
     flickr_media = flick.photos_searchLISTR()
 
-    filesid_flickr_media = [ key[0] for key in flickr_media]
+    filesid_flickr_media = [key[0] for key in flickr_media]
     NPR.niceprint('Len flickr_media={!s}'.format(len(filesid_flickr_media)))
     if args.verbose:
         print(filesid_flickr_media)
@@ -956,17 +927,17 @@ if __name__ == "__main__":
     localmediaonly = set(filesid_existing_media) - set(filesid_flickr_media)
     NPR.niceprint('------Local Media Only: {!s}'.format(len(localmediaonly)))
     for i in localmediaonly:
-        found = [ path[1] for path in existing_media if path[0] == i ]
-        setfound = [ path[2] for path in existing_media if path[0] == i ]
+        found = [path[1] for path in existing_media if path[0] == i ]
+        setfound = [path[2] for path in existing_media if path[0] == i ]
         print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
     flickrmediaonly = set(filesid_flickr_media) - set(filesid_existing_media)
     NPR.niceprint('------Flickr Media Only: {!s}'.format(len(flickrmediaonly)))
     for i in flickrmediaonly:
-        found = [ title[1] for title in flickr_media if title[0] == i ]
-        setfound = [ title[2] for title in flickr_media if title[0] == i ]
+        found = [title[1] for title in flickr_media if title[0] == i ]
+        setfound = [title[2] for title in flickr_media if title[0] == i ]
         print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
-NPR.niceprint('--------- (V' + UPLDRConstants.Version + ') End time: ' +
-              nutime.strftime(UPLDRConstants.TimeFormat) +
+NPR.niceprint('--------- (V' + UPLDR_K.Version + ') End time: ' +
+              nutime.strftime(UPLDR_K.TimeFormat) +
               ' ---------')
