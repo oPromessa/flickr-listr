@@ -938,6 +938,21 @@ if __name__ == "__main__":
         setfound = [title[2] for title in flickr_media if title[0] == i]
         print('{!s}|{!s}|{!s}'.format(i, found, setfound))
 
+    seen = {}
+    dupes = []
+    for pic in flickr_media:
+        z=str(pic[1])+'|'+pic[2]
+    if z not in seen:
+        seen[z]=1
+    else:
+        if seen[z] == 1:
+            dupes.append(z)
+        seen[z] += 1
+    NPR.niceprint('----Flickr Media Dupped: {!s} on {!s}'
+                  .format(len(dupes), len(seen)))
+    for i in dupes:
+        print('{!s}|{!s}'.format(i, seen[i]))
+
 NPR.niceprint('--------- (V' + UPLDR_K.Version + ') End time: ' +
               nutime.strftime(UPLDR_K.TimeFormat) +
               ' ---------')
