@@ -940,14 +940,17 @@ if __name__ == "__main__":
 
     seen = {}
     dupes = []
+    cpic = 0
     for pic in flickr_media:
         z=str(pic[1])+'|'+pic[2]
-    if z not in seen:
-        seen[z]=1
-    else:
-        if seen[z] == 1:
-            dupes.append(z)
-        seen[z] += 1
+        if z not in seen:
+            seen[z]=1
+        else:
+            if seen[z] == 1:
+                dupes.append(z)
+            seen[z] += 1
+        cpic += 1
+        NPR.niceprocessedfiles(cpic,len(filesid_existing_media), False)
     NPR.niceprint('----Flickr Media Dupped: {!s} on {!s}'
                   .format(len(dupes), len(seen)))
     for i in dupes:
