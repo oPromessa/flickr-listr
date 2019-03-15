@@ -98,18 +98,18 @@ nuflickr = None
 
 # =============================================================================
 # Read Config from config.ini file
-# Obtain configuration from uploadr.ini
-# Refer to contents of uploadr.ini for explanation on configuration parameters
+# Obtain configuration from listr.ini
+# Refer to contents of listr.ini for explanation on configuration parameters
 config = ConfigParser.ConfigParser()
 INIFiles = config.read(os.path.join(os.path.dirname(sys.argv[0]),
-                                    "uploadr.ini"))
+                                    "listr.ini"))
 if not INIFiles:
     sys.stderr.write('[{!s}]:[{!s}][ERROR   ]:[uploadr] '
                      'INI file: [{!s}] not found!.\n'
                      .format(nutime.strftime(UPLDR_K.TimeFormat),
                              os.getpid(),
                              os.path.join(os.path.dirname(sys.argv[0]),
-                                          'uploadr.ini')))
+                                          'listr.ini')))
     sys.exit()
 if config.has_option('Config', 'FILES_DIR'):
     FILES_DIR = eval(config.get('Config', 'FILES_DIR'))
@@ -130,7 +130,7 @@ except (ConfigParser.NoOptionError, ConfigParser.NoOptionError) as err:
                              os.getpid(),
                              str(err),
                              os.path.join(os.path.dirname(sys.argv[0]),
-                                          "uploadr.ini"),
+                                          "listr.ini"),
                              os.path.join(os.path.dirname(sys.argv[0]),
                                           "token")))
     TOKEN_CACHE = os.path.join(os.path.dirname(sys.argv[0]), "token")
@@ -175,7 +175,7 @@ if (int(LOGGING_LEVEL) if str.isdigit(LOGGING_LEVEL) else 99) not in [
                      'Assuming WARNING level.\n'.format(
                          nutime.strftime(UPLDR_K.TimeFormat),
                          os.path.join(os.path.dirname(sys.argv[0]),
-                                      "uploadr.ini")))
+                                      "listr.ini")))
 # Force conversion of LOGGING_LEVEL into int() for later use in conditionals
 LOGGING_LEVEL = int(LOGGING_LEVEL)
 logging.basicConfig(stream=sys.stderr,
@@ -841,8 +841,8 @@ if __name__ == "__main__":
             sys.exit(-1)
         raise
     parser = argparse.ArgumentParser(
-        description='Upload files to Flickr. '
-        'Uses uploadr.ini as config file.'
+        description='Lister files to Flickr. '
+        'Uses listr.ini as config file.'
     )
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Provides some more verbose output. '
@@ -865,19 +865,19 @@ if __name__ == "__main__":
     logging.warning('FILES_DIR: [{!s}]'.format(FILES_DIR))
     if FILES_DIR == "":
         NPR.niceprint('Please configure the name of the folder [FILES_DIR] '
-                      'in the INI file [normally uploadr.ini], '
+                      'in the INI file [normally listr.ini], '
                       'with media available to sync with Flickr.')
         sys.exit()
     else:
         if not os.path.isdir(FILES_DIR):
             NPR.niceprint('Please configure the name of an existant folder '
-                          'in the INI file [normally uploadr.ini] '
+                          'in the INI file [normally listr.ini] '
                           'with media available to sync with Flickr.')
             sys.exit()
 
     if FLICKR["api_key"] == "" or FLICKR["secret"] == "":
         NPR.niceprint('Please enter an API key and secret in the configuration'
-                      ' script file, normaly uploadr.ini (see README).')
+                      ' script file, normaly listr.ini (see README).')
         sys.exit()
 
     # Instantiate class Uploadr
